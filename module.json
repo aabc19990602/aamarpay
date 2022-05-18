@@ -1,0 +1,17 @@
+{
+    "alias": "aamarpay",
+    "icon": "fa fa-cog",
+    "version": "1.0.0",
+    "active": 1,
+    "providers": [
+        "Modules\\Aamarpay\\Providers\\Event",
+        "Modules\\Aamarpay\\Providers\\Main"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": [],
+    "reports": [],
+    "widgets": [],
+    "settings": [],
+    "extra-modules": {}
+}
