@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Route;
  * @see \App\Providers\Route::register
  */
 
+
 Route::portal('aamarpay', function () {
-    Route::get('invoices/{invoice}', 'Payment@show')->name('invoices.show');
-    Route::post('invoices/{invoice}/confirm', 'Main@confirm')->name('invoices.confirm')->middleware(['middleware' => 'guest']);
-});
+    Route::get('invoices/{invoice}/complete', 'Payment@confirm')->name('invoices.return');
+    Route::post('invoices/{invoice}/complete', 'Payment@complete')->name('invoices.complete');
+}, ['middleware' => 'guest']);

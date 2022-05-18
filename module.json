@@ -13,6 +13,17 @@
     "reports": [],
     "widgets": [],
     "settings": [
+
+        {
+            "type": "textGroup",
+            "name": "name",
+            "title": "general.name",
+            "icon": "fa fa-font",
+            "attributes": {
+                "required": "required"
+            },
+            "rules": "required|string"
+        },
         {
             "type": "textGroup",
             "name": "storeId",

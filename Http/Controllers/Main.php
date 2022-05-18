@@ -8,6 +8,12 @@ use Illuminate\Http\Response;
 
 class Main extends Controller
 {
+
+
+    
+
+
+
     /**
      * Display a listing of the resource.
      *
@@ -47,6 +53,13 @@ class Main extends Controller
      */
     public function show($id)
     {
+
+
+
+
+
+
+
         return view('aamarpay::show');
     }
 

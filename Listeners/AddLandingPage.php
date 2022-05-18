@@ -2,8 +2,8 @@
 
 namespace Modules\Aamarpay\Listeners;
 
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Events\Auth\LandingPageShowing as Event;
+
 
 class AddLandingPage
 {
