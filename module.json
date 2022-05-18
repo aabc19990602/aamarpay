@@ -12,6 +12,91 @@
     "requires": [],
     "reports": [],
     "widgets": [],
-    "settings": [],
+    "settings": [
+        {
+            "type": "textGroup",
+            "name": "storeId",
+            "title": "aamarpay::general.form.storeId",
+            "icon": "fa fa-font",
+            "attributes": {
+                "required": "required"
+            },
+            "rules": "required|string"
+        },
+        {
+            "type": "textGroup",
+            "name": "signatureKey",
+            "title": "aamarpay::general.form.SignatureKey",
+            "icon": "envelope",
+            "attributes": {
+                "required": "required"
+            },
+            "rules": "required"
+        },
+        {
+            "type": "selectGroup",
+            "name": "mode",
+            "title": "aamarpay::general.form.mode",
+            "icon": "plane",
+            "values": {
+                "live": "Live",
+                "sandbox": "Sandbox"
+            },
+            "selected": "live",
+            "attributes": {
+                "required": "required"
+            },
+            "rules": "required|string"
+        },
+        {
+            "type": "selectGroup",
+            "name": "transaction",
+            "title": "aamarpay::general.form.transaction",
+            "icon": "exchange-alt",
+            "values": {
+                "authorization": "Authorization",
+                "sale": "Sale"
+            },
+            "selected": "sale",
+            "attributes": {
+                "required": "required"
+            },
+            "rules": "required|string"
+        },
+        {
+            "type": "accountSelectGroup",
+            "name": "account_id",
+            "attributes": {
+                "required": "required"
+            },
+            "rules": "required"
+        },
+        {
+            "type": "textGroup",
+            "name": "order",
+            "title": "aamarpay::general.form.order",
+            "icon": "sort",
+            "attributes": {},
+            "rules": "nullable|integer"
+        },
+        {
+            "type": "radioGroup",
+            "name": "customer",
+            "title": "aamarpay::general.form.customer",
+            "enable": "general.yes",
+            "disable": "general.no",
+            "attributes": {},
+            "rules": "required|integer"
+        },
+        {
+            "type": "radioGroup",
+            "name": "debug",
+            "title": "aamarpay::general.form.debug",
+            "enable": "general.yes",
+            "disable": "general.no",
+            "attributes": {},
+            "rules": "required|integer"
+        }
+    ],
     "extra-modules": {}
 }

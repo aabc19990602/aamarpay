@@ -9,6 +9,6 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::portal('aamarpay', function () {
-    // Route::get('invoices/{invoice}', 'Main@show')->name('invoices.show');
-    // Route::post('invoices/{invoice}/confirm', 'Main@confirm')->name('invoices.confirm');
+    Route::get('invoices/{invoice}', 'Main@show')->name('invoices.show');
+    Route::post('invoices/{invoice}/confirm', 'Main@confirm')->name('invoices.confirm');
 });
