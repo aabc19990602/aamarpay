@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::portal('aamarpay', function () {
-    Route::get('invoices/{invoice}/complete', 'Payment@confirm')->name('invoices.return');
-    Route::post('invoices/{invoice}/complete', 'Payment@complete')->name('invoices.complete');
+    // Route::get('invoices/{invoice}/complete', 'Payment@complete')->name('invoices.return');
+    Route::post('invoices/{invoice}/complete', 'Payment@test')->name('invoices.complete');
+    Route::post('invoices/{invoice}/return', 'Payment@return')->name('invoices.return');
+    
+
 }, ['middleware' => 'guest']);

@@ -8,20 +8,14 @@ use Illuminate\Http\Response;
 
 class Main extends Controller
 {
-
-
-    
-
-
-
     /**
      * Display a listing of the resource.
      *
      * @return Response
      */
-    public function index()
+    public function test()
     {
-        return $this->response('aamarpay::index');
+        dd("00");
     }
 
     /**
@@ -53,13 +47,6 @@ class Main extends Controller
      */
     public function show($id)
     {
-
-
-
-
-
-
-
         return view('aamarpay::show');
     }
 

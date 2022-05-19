@@ -10,6 +10,10 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use App\Utilities\Date;
+use App\Models\Document\Document as Invoice;
+
+use DB;
 
 class Payment extends PaymentController
 {
@@ -20,6 +24,7 @@ class Payment extends PaymentController
     public function show(Document $invoice, PaymentRequest $request)
     {
 
+        
         
         $setting = $this->setting;
         
@@ -85,9 +90,6 @@ class Payment extends PaymentController
 
 
 
-    public function test(){
-        dd("d sa mkdnsak dnskaj ndkj");
-    }
 
 
     public function return(Document $invoice, Request $request)
@@ -123,80 +125,97 @@ class Payment extends PaymentController
         return redirect($invoice_url);
     }
 
-    public function complete(Document $invoice, Request $request)
+
+    public function test(Document $invoice){
+        dd($invoice);
+    }   
+
+
+    public function complete(Invoice $invoice, Request $request)
     {
+
+        // dd($invoice);
+
         $setting = $this->setting;
 
         $paypal_log = new Logger('Aamarpay');
-
         $paypal_log->pushHandler(new StreamHandler(storage_path('logs/aamarpay.log')), Logger::INFO);
 
-        
-
+    
         if (!$invoice) {
             return;
         }
 
-        dd($invoice->ampunt);
+        $inviId = $request->opt_a;
+        $invoData = DB::table('documents')->where('id', $inviId)->first();
+          
+        $d = Invoice::find(1);
+        dd($d);
+        
+         dd($invoice->id);
+        
+        
+        $invoice->company_id = $invoData->company_id;
+        $invoice->amount= $invoData->amount;
+        $invoice->currency_code= $invoData->currency_code;
+        // $invoice->id= $invoData->id;
+        $invoice->category_id= $invoData->category_id;
+        $invoice->contact_id= $invoData->contact_id;
+        $invoice->type= $invoData->type;
+        $invoice->document_number= $invoData->document_number;
+
+        $invoice->order_number= $invoData->order_number;
+        $invoice->status= $invoData->status;
+        $invoice->issued_at= $invoData->issued_at;
+        $invoice->due_at= $invoData->due_at;
+        $invoice->currency_rate= $invoData->currency_rate;
+        $invoice->contact_name= $invoData->contact_name;
+        $invoice->contact_email= $invoData->contact_email;
+        $invoice->contact_tax_number= $invoData->contact_tax_number;
+        $invoice->contact_phone= $invoData->contact_phone;
+        $invoice->contact_address= $invoData->contact_address;
+        $invoice->contact_city= $invoData->contact_city;
+        $invoice->contact_zip_code= $invoData->contact_zip_code;
+        $invoice->contact_state= $invoData->contact_state;
+        $invoice->contact_country= $invoData->contact_country;
+        $invoice->notes= $invoData->notes;
+        $invoice->footer= $invoData->footer;
+        $invoice->parent_id= $invoData->parent_id;
+        $invoice->created_from= $invoData->created_from;
+        $invoice->created_by= $invoData->created_by;
+        $invoice->created_at= $invoData->created_at;
+        $invoice->updated_at= $invoData->updated_at;
+        $invoice->deleted_at= $invoData->deleted_at;
 
 
-        $url = ($setting['mode'] == 'live') ? 'https://ipnpb.paypal.com/cgi-bin/webscr' : 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+
+        
+
+        $request['amount'] = $request->other_currency;
+        $request['currency'] = $request->currency_merchant;
+        $request['company_id'] = $invoData->company_id;
+
+        
+
+        //  dd($request->all());
 
 
-
-        $client = new Client(['verify' => false]);
-
-        $paypal_request['cmd'] = '_notify-validate';
-
-        foreach ($request->toArray() as $key => $value) {
-            $paypal_request[$key] = urlencode(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
-        }
-
-        $response = $client->post($url, $paypal_request);
-
-        if ($response->getStatusCode() != 200) {
-            $paypal_log->info('PAYPAL_STANDARD :: CURL failed ', $response->getBody()->getContents());
-        } else {
-            $response = $response->getBody()->getContents();
-        }
-
-        if ($setting['debug']) {
-            $paypal_log->info('PAYPAL_STANDARD :: IPN REQUEST: ', $request->toArray());
-        }
-
-        if ((strcmp($response, 'VERIFIED') != 0 || strcmp($response, 'UNVERIFIED') != 0)) {
-            $paypal_log->info('PAYPAL_STANDARD :: VERIFIED != 0 || UNVERIFIED != 0 ' . $request->toArray());
-
-            return;
-        }
-
-        switch ($request['payment_status']) {
-            case 'Completed':
-                $receiver_match = (strtolower($request['receiver_email']) == strtolower($setting['email']));
-
-                $total_paid_match = ((double) $request['mc_gross'] == $invoice->amount);
-
-                if ($receiver_match && $total_paid_match) {
-                    event(new PaymentReceived($invoice, $request->merge(['type' => 'income'])));
-                }
-
-                if (!$receiver_match) {
-                    $paypal_log->info('PAYPAL_STANDARD :: RECEIVER EMAIL MISMATCH! ' . strtolower($request['receiver_email']));
-                }
-
-                if (!$total_paid_match) {
-                    $paypal_log->info('PAYPAL_STANDARD :: TOTAL PAID MISMATCH! ' . $request['mc_gross']);
-                }
+        switch ($request['status_code']) {
+            case '2':
+                event(new PaymentReceived($invoice, $request->merge(['type' => 'income', 'name' => 'aamarpay', '_token' => 'Qx97EsiyYNjAALD3jiseLBE0zG1vFN8zPGTp6LfM'])));
                 break;
-            case 'Canceled_Reversal':
-            case 'Denied':
-            case 'Expired':
-            case 'Failed':
-            case 'Pending':
-            case 'Processed':
-            case 'Refunded':
-            case 'Reversed':
-            case 'Voided':
+            case '1':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+            case '10':
+            case '11':
+            case '12':
+            case '13':
                 $paypal_log->info('PAYPAL_STANDARD :: NOT COMPLETED ' . $request->toArray());
                 break;
         }
