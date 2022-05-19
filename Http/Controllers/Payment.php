@@ -25,17 +25,12 @@ class Payment extends PaymentController
         
         $this->setContactFirstLastName($invoice);
 
-        $setting['action'] = ($setting['mode'] == 'live') ? 'https://secure.aamarpay.com/index.php' : 'https://sandbox.aamarpay.com/index.php';
+        $setting['action'] = ($setting['mode'] == 'live') ? 'https://secure.aamarpay.com/request.php' : 'https://sandbox.aamarpay.com/request.php';
 
         $invoice_url = $this->getInvoiceUrl($invoice);
 
-        // $html = view('aamarpay::show', compact('setting', 'invoice', 'invoice_url'))->render();
 
-        // print_r($invoice);
-        // exit;
-        // api call
-
-        $url = 'https://sandbox.aamarpay.com/request.php'; // live url https://secure.aamarpay.com/request.php
+        $url = $setting['action']; // live url https://secure.aamarpay.com/request.php
 
         $fields = array(
             'store_id' => $setting['storeId'], 
