@@ -25,7 +25,6 @@ class Payment extends PaymentController
     {
 
         
-        
         $setting = $this->setting;
         
         $this->setContactFirstLastName($invoice);
@@ -34,9 +33,7 @@ class Payment extends PaymentController
 
         $invoice_url = $this->getInvoiceUrl($invoice);
 
-
-        $url = $setting['action']; // live url https://secure.aamarpay.com/request.php
-
+        $url = $setting['action'];
         $fields = array(
             'store_id' => $setting['storeId'], 
              'amount' => $invoice->amount, 
@@ -55,7 +52,7 @@ class Payment extends PaymentController
             'cus_fax' => 'Not¬Applicable',  //fax
             'desc' => 'payment description', 
             'success_url' => route('portal.aamarpay.invoices.complete', $invoice->id), //your success route
-            'fail_url' => route('portal.aamarpay.invoices.complete', $invoice->id), //your fail route
+            'fail_url' => route('portal.aamarpay.invoices.return', $invoice->id), //your fail route
             'cancel_url' => 'http://localhost/foldername/cancel.php', //your cancel url
             'opt_a' => $invoice->id,  //optional paramter
             'signature_key' => $setting['signatureKey']); 
@@ -96,8 +93,8 @@ class Payment extends PaymentController
     {
         $success = true;
 
-        switch ($request['payment_status']) {
-            case 'Completed':
+        switch ($request['status_code']) {
+            case '2':
                 $message = trans('messages.success.added', ['type' => trans_choice('general.payments', 1)]);
                 break;
             case 'Canceled_Reversal':
@@ -108,7 +105,7 @@ class Payment extends PaymentController
             case 'Processed':
             case 'Refunded':
             case 'Reversed':
-            case 'Voided':
+            default:
                 $message = trans('messages.error.added', ['type' => trans_choice('general.payments', 1)]);
                 $success = false;
                 break;
@@ -134,7 +131,6 @@ class Payment extends PaymentController
     public function complete(Invoice $invoice, Request $request)
     {
 
-        // dd($invoice);
 
         $setting = $this->setting;
 
@@ -146,63 +142,17 @@ class Payment extends PaymentController
             return;
         }
 
-        $inviId = $request->opt_a;
-        $invoData = DB::table('documents')->where('id', $inviId)->first();
-          
-        $d = Invoice::find(1);
-        dd($d);
-        
-         dd($invoice->id);
-        
-        
-        $invoice->company_id = $invoData->company_id;
-        $invoice->amount= $invoData->amount;
-        $invoice->currency_code= $invoData->currency_code;
-        // $invoice->id= $invoData->id;
-        $invoice->category_id= $invoData->category_id;
-        $invoice->contact_id= $invoData->contact_id;
-        $invoice->type= $invoData->type;
-        $invoice->document_number= $invoData->document_number;
-
-        $invoice->order_number= $invoData->order_number;
-        $invoice->status= $invoData->status;
-        $invoice->issued_at= $invoData->issued_at;
-        $invoice->due_at= $invoData->due_at;
-        $invoice->currency_rate= $invoData->currency_rate;
-        $invoice->contact_name= $invoData->contact_name;
-        $invoice->contact_email= $invoData->contact_email;
-        $invoice->contact_tax_number= $invoData->contact_tax_number;
-        $invoice->contact_phone= $invoData->contact_phone;
-        $invoice->contact_address= $invoData->contact_address;
-        $invoice->contact_city= $invoData->contact_city;
-        $invoice->contact_zip_code= $invoData->contact_zip_code;
-        $invoice->contact_state= $invoData->contact_state;
-        $invoice->contact_country= $invoData->contact_country;
-        $invoice->notes= $invoData->notes;
-        $invoice->footer= $invoData->footer;
-        $invoice->parent_id= $invoData->parent_id;
-        $invoice->created_from= $invoData->created_from;
-        $invoice->created_by= $invoData->created_by;
-        $invoice->created_at= $invoData->created_at;
-        $invoice->updated_at= $invoData->updated_at;
-        $invoice->deleted_at= $invoData->deleted_at;
-
-
-
-        
-
         $request['amount'] = $request->other_currency;
         $request['currency'] = $request->currency_merchant;
-        $request['company_id'] = $invoData->company_id;
+        $request['company_id'] = $invoice->company_id;
 
-        
-
-        //  dd($request->all());
 
 
         switch ($request['status_code']) {
             case '2':
                 event(new PaymentReceived($invoice, $request->merge(['type' => 'income', 'name' => 'aamarpay', '_token' => 'Qx97EsiyYNjAALD3jiseLBE0zG1vFN8zPGTp6LfM'])));
+                $message = trans('messages.success.added', ['type' => trans_choice('general.payments', 1)]);
+                flash($message)->success();
                 break;
             case '1':
             case '3':
@@ -219,5 +169,9 @@ class Payment extends PaymentController
                 $paypal_log->info('PAYPAL_STANDARD :: NOT COMPLETED ' . $request->toArray());
                 break;
         }
+
+        $invoice_url = $this->getInvoiceUrl($invoice);
+
+        return redirect($invoice_url);
     }
 }
