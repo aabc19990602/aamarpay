@@ -156,8 +156,10 @@ class Payment extends PaymentController
                 $paypal_log->info('PAYPAL_STANDARD :: NOT COMPLETED ' . $request->toArray());
                 break;
         }
+     
 
-        $invoice_url = $this->getInvoiceUrl($invoice);
+        
+        $invoice_url = route('portal.invoices.show', $invoice->id);
 
         return redirect($invoice_url);
     }

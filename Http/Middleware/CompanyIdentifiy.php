@@ -36,7 +36,7 @@ class CompanyIdentifiy
             abort(500, 'Missing company');
         }
 
-        
+
         // Set company as current
         $company = company($company_id);
 

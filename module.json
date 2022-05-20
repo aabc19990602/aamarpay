@@ -1,6 +1,6 @@
 {
     "alias": "aamarpay",
-    "icon": "fa fa-cog",
+    "icon": "fa fa-credit-card",
     "version": "1.0.0",
     "active": 1,
     "providers": [
@@ -28,7 +28,7 @@
             "type": "textGroup",
             "name": "storeId",
             "title": "aamarpay::general.form.storeId",
-            "icon": "fa fa-font",
+            "icon": "fa fa-shopping-cart",
             "attributes": {
                 "required": "required"
             },
@@ -38,7 +38,7 @@
             "type": "textGroup",
             "name": "signatureKey",
             "title": "aamarpay::general.form.SignatureKey",
-            "icon": "envelope",
+            "icon": "fa fa-key",
             "attributes": {
                 "required": "required"
             },
