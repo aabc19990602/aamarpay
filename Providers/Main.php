@@ -29,6 +29,7 @@ class Main extends Provider
         $this->loadTranslations();
         $this->loadMigrations();
         //$this->loadConfig();
+        app('router')->aliasMiddleware('company_', \Modules\Aamarpay\Http\Middleware\CompanyIdentifiy::class);
     }
 
     /**

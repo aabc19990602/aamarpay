@@ -53,7 +53,7 @@ class Payment extends PaymentController
             'desc' => 'payment description', 
             'success_url' => route('portal.aamarpay.invoices.complete', $invoice->id), //your success route
             'fail_url' => route('portal.aamarpay.invoices.return', $invoice->id), //your fail route
-            'cancel_url' => 'http://localhost/foldername/cancel.php', //your cancel url
+            'cancel_url' => route('portal.aamarpay.invoices.return', $invoice->id), //your cancel url
             'opt_a' => $invoice->id,  //optional paramter
             'signature_key' => $setting['signatureKey']); 
 
@@ -70,7 +70,6 @@ class Payment extends PaymentController
         $url = str_replace('"', '', stripslashes(curl_exec($ch)));	
         curl_close($ch); 
 
-        // $url = $url_forward;
          $html = view('aamarpay::show', compact('setting', 'invoice', 'invoice_url', 'url'))->render();
 
         // end api call
@@ -97,14 +96,6 @@ class Payment extends PaymentController
             case '2':
                 $message = trans('messages.success.added', ['type' => trans_choice('general.payments', 1)]);
                 break;
-            case 'Canceled_Reversal':
-            case 'Denied':
-            case 'Expired':
-            case 'Failed':
-            case 'Pending':
-            case 'Processed':
-            case 'Refunded':
-            case 'Reversed':
             default:
                 $message = trans('messages.error.added', ['type' => trans_choice('general.payments', 1)]);
                 $success = false;
@@ -123,14 +114,10 @@ class Payment extends PaymentController
     }
 
 
-    public function test(Document $invoice){
-        dd($invoice);
-    }   
 
 
     public function complete(Invoice $invoice, Request $request)
     {
-
 
         $setting = $this->setting;
 

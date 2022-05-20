@@ -10,12 +10,6 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::portal('aamarpay', function () {
-    // Route::get('invoices/{invoice}/complete', 'Payment@complete')->name('invoices.return');
     Route::post('invoices/{invoice}/complete', 'Payment@complete')->name('invoices.complete');
     Route::post('invoices/{invoice}/return', 'Payment@return')->name('invoices.return');
-    // Route::get('tt/{invoice}', 'Payment@test')->middleware(['middleware' => 'guest']);
-    
-
-}
-, ['middleware' => 'guest_']
-);
+}, ['middleware' => ['web','auth.disabled',\Modules\Aamarpay\Http\Middleware\CompanyIdentifiy::class, 'bindings']]);
