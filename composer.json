@@ -2,7 +2,7 @@
     "name": "aabc19990602/aamarpay",
     "description": "Aamarpay Standard app for Akaunting",
     "homepage": "https://akaunting.com",
-    "type": "laravel-modulecomposer require aabc19990602/aamarpay",
+    "type": "laravel-module",
     "require": {
 
     },
